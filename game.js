@@ -7,14 +7,53 @@ class Intro extends Phaser.Scene {
     constructor() {
         super('intro')
     }
+    preload(){
+        this.load.path = './assets/';
+        this.load.image('Door', 'Door.png');
+        this.load.image('Wall', 'DoorScene.png');
+    }
     create() {
-        this.add.text(700,300, "Click to start", {fontSize: 65, fontStyle: 'italic'});
-        this.input.on('pointerdown', () => {
-            this.cameras.main.fade(1000, 0,0,0);
-            this.time.delayedCall(1000, () => this.scene.start('Main'));
-        });
+        this.imageObject = this.add.image(
+            900,
+            450,
+            'Wall',
+        )
+        this.imageObject.setScale(1.16);
+
+        let door = this.imageObject = this.add.sprite(
+            920,
+            420,
+            'Door',
+        )
+        this.imageObject.setScale(1.35);
+        door.setInteractive()
+        door.on('pointerover', () => {
+            let message = this.add.text(1850, 200, 'Click to start', {fontSize: 55, color: '#eea' })
+            this.add.tween({
+                targets: door,
+                scale: {from: 1.35, to: 1.35 + .06},
+                duration: 100
+            })
+            this.tweens.add({
+                targets: message,
+                alpha: { from: 1, to: 0 },
+                easing: 'Quintic.in',
+                duration: 4 * 1000
+            });
+        })
+        door.on('pointerout', () => {
+            this.add.tween({
+                targets: door,
+                scale: {from: 1.35 + .06, to: 1.35},
+                duration: 1
+                })
+        })
+        door.on('pointerdown', () => {
+            this.scene.start('Main')
+        })
     }
 }
+
 
 class Main extends AdventureScene {
     constructor(){
@@ -102,6 +141,16 @@ class Main extends AdventureScene {
         )
         this.imageObject.setScale(.32);
         this.emphasize(radio, .32);
+
+        let back = this.add.text(30, 730, "↶", {fontSize: 200} )
+        back.setInteractive()
+        back.on('pointerover', () => {
+            this.showMessage("click to go back")
+        })
+        back.on('pointerdown', () => {
+            //change
+            this.gotoScene('Main');
+        })
     }
    
 }
@@ -306,6 +355,52 @@ class SingFish extends AdventureScene{
 
     }
 }
+class End extends AdventureScene{
+    constructor(){
+        super('End', 'Front door');
+    }
+    preload(){
+        this.load.path = './assets/';
+        this.load.image('Door', 'Door.png');
+        this.load.image('Wall', 'DoorScene.png');
+    }
+    onEnter(){
+        this.imageObject = this.add.image(
+            900,
+            450,
+            'Wall',
+        )
+        this.imageObject.setScale(1.16);
+
+        let door = this.imageObject = this.add.sprite(
+            920,
+            420,
+            'Door',
+        )
+        this.imageObject.setScale(1.35);
+        door.setInteractive()
+        this.emphasize(door, 1.35)
+        back.on('pointerover', () => {
+            this.showMessage("are you sure you want to leave?")
+        })
+        back.on('pointerdown', () => {
+            this.gotoScene('outside');
+        })
+    }
+
+}
+class Outside extends Phaser.Scene {
+    constructor() {
+        super('outside')
+    }
+    preload(){
+        this.load.path = './assets/';
+        this.load.image('Door', 'Door.png');
+    }
+}
+
+
+
 const game = new Phaser.Game({
     scale: {
         mode: Phaser.Scale.FIT,
@@ -313,6 +408,6 @@ const game = new Phaser.Game({
         width: 2400,
         height: 900
     },
-    scene: [SingFish, Tank, Main, Drawer, Intro],
+    scene: [End, Intro, SingFish, Tank, Main, Drawer],
     title: "Adventure Game",
 });
