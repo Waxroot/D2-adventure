@@ -1,131 +1,106 @@
-class Demo1 extends AdventureScene {
-    constructor() {
-        super("demo1", "First Room");
-    }
-
-    onEnter() {
-
-        let clip = this.add.text(this.w * 0.3, this.w * 0.3, "📎 paperclip")
-            .setFontSize(this.s * 2)
-            .setInteractive()
-            .on('pointerover', () => this.showMessage("Metal, bent."))
-            .on('pointerdown', () => {
-                this.showMessage("No touching!");
-                this.tweens.add({
-                    targets: clip,
-                    x: '+=' + this.s,
-                    repeat: 2,
-                    yoyo: true,
-                    ease: 'Sine.inOut',
-                    duration: 100
-                });
-            });
-
-        let key = this.add.text(this.w * 0.5, this.w * 0.1, "🔑 key")
-            .setFontSize(this.s * 2)
-            .setInteractive()
-            .on('pointerover', () => {
-                this.showMessage("It's a nice key.")
-            })
-            .on('pointerdown', () => {
-                this.showMessage("You pick up the key.");
-                this.gainItem('key');
-                this.tweens.add({
-                    targets: key,
-                    y: `-=${2 * this.s}`,
-                    alpha: { from: 1, to: 0 },
-                    duration: 500,
-                    onComplete: () => key.destroy()
-                });
-            })
-
-        let door = this.add.text(this.w * 0.1, this.w * 0.15, "🚪 locked door")
-            .setFontSize(this.s * 2)
-            .setInteractive()
-            .on('pointerover', () => {
-                if (this.hasItem("key")) {
-                    this.showMessage("You've got the key for this door.");
-                } else {
-                    this.showMessage("It's locked. Can you find a key?");
-                }
-            })
-            .on('pointerdown', () => {
-                if (this.hasItem("key")) {
-                    this.loseItem("key");
-                    this.showMessage("*squeak*");
-                    door.setText("🚪 unlocked door");
-                    this.gotoScene('demo2');
-                }
-            })
-
-    }
-}
-
-class Demo2 extends AdventureScene {
-    constructor() {
-        super("demo2", "The second room has a long name (it truly does).");
-    }
-    onEnter() {
-        this.add.text(this.w * 0.3, this.w * 0.4, "just go back")
-            .setFontSize(this.s * 2)
-            .setInteractive()
-            .on('pointerover', () => {
-                this.showMessage("You've got no other choice, really.");
-            })
-            .on('pointerdown', () => {
-                this.gotoScene('demo1');
-            });
-
-        let finish = this.add.text(this.w * 0.6, this.w * 0.2, '(finish the game)')
-            .setInteractive()
-            .on('pointerover', () => {
-                this.showMessage('*giggles*');
-                this.tweens.add({
-                    targets: finish,
-                    x: this.s + (this.h - 2 * this.s) * Math.random(),
-                    y: this.s + (this.h - 2 * this.s) * Math.random(),
-                    ease: 'Sine.inOut',
-                    duration: 500
-                });
-            })
-            .on('pointerdown', () => this.gotoScene('outro'));
-    }
-}
-
+let x = true;
 class Intro extends Phaser.Scene {
     constructor() {
         super('intro')
     }
     create() {
-        this.add.text(50,50, "Adventure awaits!").setFontSize(50);
-        this.add.text(50,100, "Click anywhere to begin.").setFontSize(20);
+        this.add.text(700,300, "Click to start", {fontSize: 65, fontStyle: 'italic'});
         this.input.on('pointerdown', () => {
             this.cameras.main.fade(1000, 0,0,0);
-            this.time.delayedCall(1000, () => this.scene.start('demo1'));
+            this.time.delayedCall(1000, () => this.scene.start('Main'));
         });
     }
 }
 
-class Outro extends Phaser.Scene {
-    constructor() {
-        super('outro');
+class Main extends AdventureScene {
+    constructor(){
+        super('Main', 'Main room')
     }
-    create() {
-        this.add.text(50, 50, "That's all!").setFontSize(50);
-        this.add.text(50, 100, "Click anywhere to restart.").setFontSize(20);
-        this.input.on('pointerdown', () => this.scene.start('intro'));
+    preload(){
+        this.load.path = './assets/';
+        this.load.image('Background', 'Main.png');
+        this.load.image('Trout', 'mountedFish.PNG');
+        this.load.image('Dog', 'Dog.png');
+        this.load.image('Drawer', 'Drawer.png');
+        this.load.image('Fish', 'Fish.png');
+        this.load.image('Bowl', 'fishBowl.png');
+        this.load.image('Radio', 'Radio.PNG');
     }
+    onEnter(){
+        this.longMessage('Grandmothers old fishing shed. Maybe I should look around')
+        this.imageObject = this.add.image(
+            905,
+            450,
+            'Background',
+        )
+        this.imageObject.setScale(.75);
+
+        //trout
+        let trout = this.imageObject = this.add.sprite(
+            1160,
+            78,
+            'Trout',
+            
+        )
+        this.imageObject.setScale(.17);
+        this.emphasize(trout,  0.17);
+
+        //dog
+        let dog = this.imageObject = this.add.image(
+            490,
+            695,
+            'Dog',
+        )
+        this.imageObject.setScale(.35);
+        this.emphasize(dog, .35)
+
+        //drawer
+        let Drawer = this.imageObject = this.add.image(
+            810,
+            600,
+            'Drawer',
+        )
+        this.imageObject.setScale(.37);
+        this.emphasize(Drawer, .37)
+
+        //bowl
+        let bowl = this.imageObject = this.add.image(
+            1155,
+            458,
+            'Bowl'
+        )
+        this.imageObject.setScale(.37);
+        this.emphasize(bowl, .37);
+
+        //fish
+        let fish = this.imageObject = this.add.image(
+            1140,
+            465,
+            'Fish',
+        )
+        this.imageObject.setScale(.25);
+
+        //radio
+        let radio = this.imageObject = this.add.image(
+            447,
+            460,
+            'Radio'
+        )
+        this.imageObject.setScale(.32);
+        this.emphasize(radio, .32);
+
+
+        
+    }
+   
 }
-
-
 const game = new Phaser.Game({
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: 1920,
-        height: 1080
+        width: 2400,
+        height: 900
     },
-    scene: [Intro, Demo1, Demo2, Outro],
+    scene: [Main, Intro],
     title: "Adventure Game",
 });
-

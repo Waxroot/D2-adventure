@@ -20,16 +20,16 @@ class AdventureScene extends Phaser.Scene {
         this.cameras.main.fadeIn(this.transitionDuration, 0, 0, 0);
 
         this.add.rectangle(this.w * 0.75, 0, this.w * 0.25, this.h).setOrigin(0, 0).setFillStyle(0);
-        this.add.text(this.w * 0.75 + this.s, this.s)
+        this.add.text(this.w * 0.77 + this.s, this.s)
             .setText(this.name)
             .setStyle({ fontSize: `${3 * this.s}px` })
             .setWordWrapWidth(this.w * 0.25 - 2 * this.s);
         
-        this.messageBox = this.add.text(this.w * 0.75 + this.s, this.h * 0.33)
+        this.messageBox = this.add.text(this.w * 0.77 + this.s, this.h * 0.33)
             .setStyle({ fontSize: `${2 * this.s}px`, color: '#eea' })
             .setWordWrapWidth(this.w * 0.25 - 2 * this.s);
 
-        this.inventoryBanner = this.add.text(this.w * 0.75 + this.s, this.h * 0.66)
+        this.inventoryBanner = this.add.text(this.w * 0.77 + this.s, this.h * 0.66)
             .setStyle({ fontSize: `${2 * this.s}px` })
             .setText("Inventory")
             .setAlpha(0);
@@ -62,6 +62,15 @@ class AdventureScene extends Phaser.Scene {
             duration: 4 * this.transitionDuration
         });
     }
+    longMessage(message){
+        this.messageBox.setText(message),
+        this.time.delayedCall(1300, () => this.tweens.add({
+            targets: this.messageBox,
+            alpha: { from: 1, to: 0 },
+            easing: 'Quintic.in',
+            duration: 4 * this.transitionDuration
+        }))
+    }
 
     updateInventory() {
         if (this.inventory.length > 0) {
@@ -83,9 +92,9 @@ class AdventureScene extends Phaser.Scene {
         this.inventoryTexts = [];
         let h = this.h * 0.66 + 3 * this.s;
         this.inventory.forEach((e, i) => {
-            let text = this.add.text(this.w * 0.75 + 2 * this.s, h, e)
+            let text = this.add.text(this.w * 0.77 + 2 * this.s, h, e)
                 .setStyle({ fontSize: `${1.5 * this.s}px` })
-                .setWordWrapWidth(this.w * 0.75 + 4 * this.s);
+                .setWordWrapWidth(this.w * 0.77 + 4 * this.s);
             h += text.height + this.s;
             this.inventoryTexts.push(text);
         });
@@ -147,4 +156,30 @@ class AdventureScene extends Phaser.Scene {
     onEnter() {
         console.warn('This AdventureScene did not implement onEnter():', this.constructor.name);
     }
+
+    emphasize(item, num1){
+        item.setInteractive()
+        item.on('pointerover', () => {
+            item.setInteractive()
+        this.add.tween({
+            targets: item,
+            scale: {from: num1, to: num1 + .03},
+            duration: 100
+        })
+        item.on('pointerout', () => {
+            this.add.tween({
+                targets: item,
+                scale: {from: num1 + .03, to: num1},
+                duration: 1
+            })
+        })
+
+    });}
+   addComment(item, comment){
+        item.interactive()
+        item.on('pointerover', () => {
+            this.commentBox.setText(comment);
+   });}
+    
+        
 }
