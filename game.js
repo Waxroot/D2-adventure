@@ -63,7 +63,6 @@ class Main extends AdventureScene {
         this.load.path = './assets/';
         this.load.image('Background', 'Main.png');
         this.load.image('Trout', 'mountedFish.PNG');
-        this.load.image('Dog', 'Dog.png');
         this.load.image('Drawer', 'Drawer.png');
         this.load.image('Fish', 'Fish.png');
         this.load.image('Bowl', 'fishBowl.png');
@@ -91,14 +90,6 @@ class Main extends AdventureScene {
             this.gotoScene('SingingFish');
         })
 
-        //dog
-        let dog = this.imageObject = this.add.image(
-            490,
-            695,
-            'Dog',
-        )
-        this.imageObject.setScale(.35);
-        this.emphasize(dog, .35)
 
         //drawer
         let Drawer = this.imageObject = this.add.image(
@@ -149,7 +140,7 @@ class Main extends AdventureScene {
         })
         back.on('pointerdown', () => {
             //change
-            this.gotoScene('Main');
+            this.gotoScene('End');
         })
     }
    
@@ -380,10 +371,11 @@ class End extends AdventureScene{
         this.imageObject.setScale(1.35);
         door.setInteractive()
         this.emphasize(door, 1.35)
-        back.on('pointerover', () => {
+
+        door.on('pointerover', () => {
             this.showMessage("are you sure you want to leave?")
         })
-        back.on('pointerdown', () => {
+        door.on('pointerdown', () => {
             this.gotoScene('outside');
         })
     }
@@ -395,7 +387,36 @@ class Outside extends Phaser.Scene {
     }
     preload(){
         this.load.path = './assets/';
-        this.load.image('Door', 'Door.png');
+        this.load.image('Ocean', 'Ocean.png');
+    }
+    create(){
+        this.imageObject = this.add.image(
+            1200,
+            450,
+            'Ocean',
+        )
+        this.imageObject.setScale(1.1);
+        let message = this.add.text(750, 400, 'The End', {fontSize: 200, color: 'white', alpha: 0 })
+        this.add.tween({
+            targets: message,
+            alpha: {from:1, to: 0},
+            duration: 1,})
+        this.time.delayedCall(1000, () => 
+        this.add.tween({
+            targets: message,
+            alpha: {from:0, to: 1},
+            duration: 1000,
+        }));
+        this.time.delayedCall(2500, () => 
+        this.add.tween({
+            targets: message,
+            alpha: {from:1, to: 0},
+            duration: 1000,
+        }));
+
+       
+
+
     }
 }
 
@@ -408,6 +429,6 @@ const game = new Phaser.Game({
         width: 2400,
         height: 900
     },
-    scene: [End, Intro, SingFish, Tank, Main, Drawer],
+    scene: [Intro, SingFish, Tank, Main, Drawer, End, Outside],
     title: "Adventure Game",
 });
