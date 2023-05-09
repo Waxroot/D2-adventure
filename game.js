@@ -2,6 +2,7 @@
 var x2 = 8000; //4000
 var y2 = 20000; //8000
 var foodgone = false;
+var secret = true;
 class Intro extends Phaser.Scene {
     constructor() {
         super('intro')
@@ -47,6 +48,9 @@ class Main extends AdventureScene {
         )
         this.imageObject.setScale(.17);
         this.emphasize(trout,  0.17);
+        trout.on('pointerdown', () => {
+            this.gotoScene('SingingFish');
+        })
 
         //dog
         let dog = this.imageObject = this.add.image(
@@ -163,7 +167,6 @@ class Tank extends AdventureScene{
         this.load.image('Fish', 'Fish.png');
     }
     onEnter(){
-        console.log(x2);
         this.imageObject = this.add.image(
             905,
             430,
@@ -236,6 +239,73 @@ class Tank extends AdventureScene{
 
     }
 }
+class SingFish extends AdventureScene{
+    constructor(){
+        super('SingingFish', 'Mounted fish');
+    }
+    preload(){
+        this.load.path = './assets/';
+        this.load.image('fishHead', 'FishHead.png');
+        this.load.image('singFishScene', 'TalkingFishScene.png');
+        this.load.image('button', 'button.png');
+    }
+    onEnter(){
+        this.imageObject = this.add.image(
+            905,
+            430,
+            'singFishScene',
+        )
+        this.imageObject.setScale(.77);
+        let button = this.imageObject = this.add.image(
+            1300,
+            600,
+            'button',
+        )
+        this.imageObject.setScale(1.1);
+        this.emphasize(button, 1.1);
+        button.setInteractive()
+        button.on('pointerover', () => {
+            if(secret == true){
+                this.showMessage('I Wonder what this button does')
+            }else{
+                this.showMessage("Looks like it's one of those singing fish")
+            }
+            
+        })
+
+
+        button.on('pointerdown', () => {
+            let head = this.imageObject = this.add.image(
+                630,
+                475,
+                'fishHead',
+            )
+            this.imageObject.setScale(.9);
+            this.add.tween({
+                targets: head,
+                alpha: {from:0, to: 1},
+                duration: 10,
+            })
+            this.time.delayedCall(1000, () => this.add.tween({
+                targets: head,
+                alpha: {from:1, to: 0},
+                duration: 10,
+            }));
+            secret = false;
+        })
+
+        let back = this.add.text(30, 730, "↶", {fontSize: 200} )
+        back.setInteractive()
+        back.on('pointerover', () => {
+            this.showMessage("click to go back")
+        })
+        back.on('pointerdown', () => {
+            this.gotoScene('Main');
+        })
+
+
+    }
+}
 const game = new Phaser.Game({
     scale: {
         mode: Phaser.Scale.FIT,
@@ -243,6 +313,6 @@ const game = new Phaser.Game({
         width: 2400,
         height: 900
     },
-    scene: [Tank, Main, Drawer, Intro],
+    scene: [SingFish, Tank, Main, Drawer, Intro],
     title: "Adventure Game",
 });

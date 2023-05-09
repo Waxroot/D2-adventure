@@ -163,13 +163,13 @@ class AdventureScene extends Phaser.Scene {
             item.setInteractive()
         this.add.tween({
             targets: item,
-            scale: {from: num1, to: num1 + .03},
+            scale: {from: num1, to: num1 + .04},
             duration: 100
         })
         item.on('pointerout', () => {
             this.add.tween({
                 targets: item,
-                scale: {from: num1 + .03, to: num1},
+                scale: {from: num1 + .04, to: num1},
                 duration: 1
             })
         })
