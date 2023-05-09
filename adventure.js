@@ -25,7 +25,7 @@ class AdventureScene extends Phaser.Scene {
             .setStyle({ fontSize: `${3 * this.s}px` })
             .setWordWrapWidth(this.w * 0.25 - 2 * this.s);
         
-        this.messageBox = this.add.text(this.w * 0.77 + this.s, this.h * 0.33)
+        this.messageBox = this.add.text(this.w * 0.75 + this.s, this.h * 0.33)
             .setStyle({ fontSize: `${2 * this.s}px`, color: '#eea' })
             .setWordWrapWidth(this.w * 0.25 - 2 * this.s);
 
@@ -175,11 +175,6 @@ class AdventureScene extends Phaser.Scene {
         })
 
     });}
-   addComment(item, comment){
-        item.interactive()
-        item.on('pointerover', () => {
-            this.commentBox.setText(comment);
-   });}
     
-        
+    
 }

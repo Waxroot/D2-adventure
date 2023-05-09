@@ -1,4 +1,7 @@
-let x = true;
+
+var x2 = 8000; //4000
+var y2 = 20000; //8000
+var foodgone = false;
 class Intro extends Phaser.Scene {
     constructor() {
         super('intro')
@@ -62,6 +65,10 @@ class Main extends AdventureScene {
         )
         this.imageObject.setScale(.37);
         this.emphasize(Drawer, .37)
+        Drawer.on('pointerdown', () => {
+            this.gotoScene('DrawerScene');
+        })
+
 
         //bowl
         let bowl = this.imageObject = this.add.image(
@@ -71,6 +78,9 @@ class Main extends AdventureScene {
         )
         this.imageObject.setScale(.37);
         this.emphasize(bowl, .37);
+        bowl.on('pointerdown', () => {
+            this.gotoScene('TankScene');
+        })
 
         //fish
         let fish = this.imageObject = this.add.image(
@@ -88,11 +98,143 @@ class Main extends AdventureScene {
         )
         this.imageObject.setScale(.32);
         this.emphasize(radio, .32);
-
-
-        
     }
    
+}
+
+class Drawer extends AdventureScene{
+    constructor(){
+        super('DrawerScene', 'Old Drawer');
+    }
+    preload(){
+        this.load.path = './assets/';
+        this.load.image('drawerScene', 'DrawerScene.png');
+        this.load.image('fishFood', 'fishFood.png')
+    }
+    onEnter(){
+        this.imageObject = this.add.image(
+            900,
+            450,
+            'drawerScene',
+        )
+        this.imageObject.setScale(.90);
+        if(this.hasItem('Fish Food')){
+        }else if (foodgone == false){{
+
+        let food = this.imageObject = this.add.image(
+            1100,
+            400,
+            'fishFood',
+        )
+        this.imageObject.setScale(.4);
+        this.emphasize(food, .4)
+        food.on('pointerover', () => {
+            this.showMessage('look, some old fish food')})
+        food.on('pointerdown', () => {
+            this.showMessage('maybe I can use it somewhere')
+            foodgone = true,
+            this.add.tween({
+                targets: food,
+                alpha: {from:1, to: 0},
+                duration: 10,
+                onComplete: () => food.destroy(),
+            })
+            this.gainItem('Fish Food');
+        })}}
+        let back = this.add.text(30, 730, "↶", {fontSize: 200} )
+        back.setInteractive()
+        back.on('pointerover', () => {
+            this.showMessage("click to go back")
+        })
+        back.on('pointerdown', () => {
+            this.gotoScene('Main');
+        })
+
+    }
+}
+
+class Tank extends AdventureScene{
+    constructor(){
+        super('TankScene', 'Fish Tank');
+    }
+    preload(){
+        this.load.path = './assets/';
+        this.load.image('tankScene', 'fishTank.png');
+        this.load.image('Fish', 'Fish.png');
+    }
+    onEnter(){
+        console.log(x2);
+        this.imageObject = this.add.image(
+            905,
+            430,
+            'tankScene',
+        )
+        this.imageObject.setScale(1.02);
+
+        let fish = this.imageObject = this.add.image(
+            750,
+            460,
+            'Fish',
+        )
+        this.imageObject.setScale(1.3);
+        this.tweens.add({
+            targets: fish,
+            props: {
+                x: { value: 1000, duration: x2, flipX: true },
+                y: { value: 500, duration: y2,  },
+            },
+            ease: 'Sine.easeInOut',
+            yoyo: true,
+            repeat: -1,
+        });
+        fish.setInteractive()
+        fish.on('pointerover', () => {
+            console.log(x2);
+            if(this.hasItem('Fish Food')){
+                this.showMessage('Maybe I can feed it the food I found')
+            }else if(x2==2000){
+                this.showMessage('Look at it go')
+            
+        }else{
+                this.showMessage("The fish seems sluggish. Maybe it hasn't been feed in a while")
+            }
+
+        })
+        fish.on('pointerdown', () =>{
+            if(this.hasItem('Fish Food')){
+                this.showMessage('Looks like that helped')
+                this.loseItem('Fish Food')
+                x2 = 2000
+                y2 = 6000
+                this.tweens.add({
+                    targets: fish,
+                    props: {
+                        x: { value: 1000, duration: x2, flipX: true },
+                        y: { value: 500, duration: y2,  },
+                    },
+                    ease: 'Sine.easeInOut',
+                    yoyo: true,
+                    repeat: -1,
+                });
+            }else if(x2==2000){
+                this.showMessage("I think it's full for now")
+            
+        }else{
+                this.showMessage("I don't have any food")
+            }
+
+        })
+        let back = this.add.text(30, 730, "↶", {fontSize: 200} )
+        back.setInteractive()
+        back.on('pointerover', () => {
+            this.showMessage("click to go back")
+        })
+        back.on('pointerdown', () => {
+            this.gotoScene('Main');
+        })
+
+
+    }
 }
 const game = new Phaser.Game({
     scale: {
@@ -101,6 +243,6 @@ const game = new Phaser.Game({
         width: 2400,
         height: 900
     },
-    scene: [Main, Intro],
+    scene: [Tank, Main, Drawer, Intro],
     title: "Adventure Game",
 });
