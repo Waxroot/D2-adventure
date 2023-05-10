@@ -1,6 +1,7 @@
 
 var x2 = 8000; //4000
 var y2 = 20000; //8000
+var muisic = false;
 var foodgone = false;
 var secret = true;
 class Intro extends Phaser.Scene {
@@ -27,8 +28,14 @@ class Intro extends Phaser.Scene {
         )
         this.imageObject.setScale(1.35);
         door.setInteractive()
+        let message = this.add.text(1850, 200, 'Click on the door to start', {fontSize: 30, color: '#eea' })
+        this.tweens.add({
+            targets: message,
+            alpha: { from: 1, to: 0 },
+            easing: 'Quintic.in',
+            duration: 4 * 1000
+        });
         door.on('pointerover', () => {
-            let message = this.add.text(1850, 200, 'Click to start', {fontSize: 55, color: '#eea' })
             this.add.tween({
                 targets: door,
                 scale: {from: 1.35, to: 1.35 + .06},
@@ -38,8 +45,7 @@ class Intro extends Phaser.Scene {
                 targets: message,
                 alpha: { from: 1, to: 0 },
                 easing: 'Quintic.in',
-                duration: 4 * 1000
-            });
+                duration: 4 * 1000})
         })
         door.on('pointerout', () => {
             this.add.tween({
@@ -67,6 +73,9 @@ class Main extends AdventureScene {
         this.load.image('Fish', 'Fish.png');
         this.load.image('Bowl', 'fishBowl.png');
         this.load.image('Radio', 'Radio.PNG');
+        this.load.image('Dog', 'Dog.png');
+        this.load.audio('ruff', 'Ruff.mp3');
+        this.load.audio('Music', 'Radiomuisic.mp3');
     }
     onEnter(){
         this.longMessage('Grandmothers old fishing shed. Maybe I should look around')
@@ -88,6 +97,7 @@ class Main extends AdventureScene {
         this.emphasize(trout,  0.17);
         trout.on('pointerdown', () => {
             this.gotoScene('SingingFish');
+            radioMusic.stop();
         })
 
 
@@ -132,6 +142,39 @@ class Main extends AdventureScene {
         )
         this.imageObject.setScale(.32);
         this.emphasize(radio, .32);
+        let radioMusic = this.sound.add('Music');
+        radio.on('pointerover', () => {
+            if(muisic == false){
+                this.showMessage('press to play');
+            }else{
+                this.showMessage('press to stop');
+            }})
+        radio.on('pointerdown', () => {
+            if (muisic == false){
+            radioMusic.loop = true;
+            radioMusic.play();
+            muisic = true
+        }else{
+            radioMusic.stop();
+            muisic = false
+
+        }
+
+        })
+
+        //dog
+        let dog = this.imageObject = this.add.image(
+            490,
+            695,
+            'Dog',
+        )
+        this.imageObject.setScale(.35);
+        this.emphasize(dog, .35)
+        dog.on('pointerdown', () => {
+            this.sound.add('ruff').play();
+            radioMusic.stop();
+
+        })
 
         let back = this.add.text(30, 730, "↶", {fontSize: 200} )
         back.setInteractive()
@@ -288,6 +331,7 @@ class SingFish extends AdventureScene{
         this.load.image('fishHead', 'FishHead.png');
         this.load.image('singFishScene', 'TalkingFishScene.png');
         this.load.image('button', 'button.png');
+        this.load.audio('fishSong', 'fishSong.mp3');
     }
     onEnter(){
         this.imageObject = this.add.image(
@@ -315,22 +359,46 @@ class SingFish extends AdventureScene{
 
 
         button.on('pointerdown', () => {
-            let head = this.imageObject = this.add.image(
+            let head = this.imageObject = this.add.sprite(
                 630,
                 475,
                 'fishHead',
+                
+                
             )
             this.imageObject.setScale(.9);
-            this.add.tween({
+            head.alpha = 0,
+            this.time.delayedCall(1, () => this.sound.add('fishSong').play())
+            this.time.delayedCall(6580, () => this.add.tween({
                 targets: head,
                 alpha: {from:0, to: 1},
                 duration: 10,
-            })
-            this.time.delayedCall(1000, () => this.add.tween({
+            }))
+            this.time.delayedCall(9000, () => this.add.tween({
                 targets: head,
                 alpha: {from:1, to: 0},
                 duration: 10,
             }));
+            this.time.delayedCall(9900, () => this.add.tween({
+                targets: head,
+                alpha: {from:0, to: 1},
+                duration: 10,
+            }))
+            this.time.delayedCall(14000, () => this.add.tween({
+                targets: head,
+                alpha: {from:1, to: 0},
+                duration: 10,
+            }))
+            this.time.delayedCall(16500, () => this.add.tween({
+                targets: head,
+                alpha: {from:0, to: 1},
+                duration: 10,
+            }))
+            this.time.delayedCall(18000, () => this.add.tween({
+                targets: head,
+                alpha: {from:1, to: 0},
+                duration: 10,
+            }))
             secret = false;
         })
 
@@ -429,6 +497,6 @@ const game = new Phaser.Game({
         width: 2400,
         height: 900
     },
-    scene: [Intro, SingFish, Tank, Main, Drawer, End, Outside],
+    scene: [ Intro, Main, SingFish, Tank, Drawer, End, Outside],
     title: "Adventure Game",
 });
