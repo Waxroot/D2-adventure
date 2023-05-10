@@ -277,7 +277,7 @@ class Tank extends AdventureScene{
         fish.on('pointerover', () => {
             console.log(x2);
             if(this.hasItem('Fish Food')){
-                this.showMessage('Maybe I can feed it the food I found')
+                this.showMessage('Maybe I can fed it the food I found')
             }else if(x2==2000){
                 this.showMessage('Look at it go')
             
