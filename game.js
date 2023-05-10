@@ -28,7 +28,7 @@ class Intro extends Phaser.Scene {
         )
         this.imageObject.setScale(1.35);
         door.setInteractive()
-        let message = this.add.text(1850, 200, 'Click on the door to start', {fontSize: 30, color: '#eea' })
+        let message = this.add.text(1850, 200, 'Click the door to start', {fontSize: 35, color: '#eea' })
         this.tweens.add({
             targets: message,
             alpha: { from: 1, to: 0 },

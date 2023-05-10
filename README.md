@@ -18,6 +18,10 @@ Asset sources:
 -all png images except Ocean.png was created by me using the app procreate
 -Ocean.png is a combination of a wooden dock I created in procreate and an edited ocean background that I desaturized from [KnoblePersona](https://opengameart.org/content/ocean-background) on OpenGameArt.com
 
+-audio ruff was created and recorded by me through quicktimeplayer then converted through muisic app
+-Radiomuisic is the song Dites moi Tu by Karpatt that I recorded on a phone using voice recorder to sound more distorted then trimmed to work in a loop using qudacity
+-fishSong is the song money by the flying lizards that I recorded on a phone using voice recorder to sound more distorted that I then trimmed then added a fade in and out effect to using audacity
+
 
 Code sources:
 - `adventure.js` and `index.html` were created for this project [Adam Smith](https://github.com/rndmcnlly) and edited by me.
